@@ -18,4 +18,4 @@ with open("a_input.txt", "r") as file:
         if currentWheelState == 0:
             zeroLandings += 1
 
-print(zeroLandings) # correct answer is 1034
+print(zeroLandings)

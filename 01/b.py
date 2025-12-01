@@ -28,14 +28,8 @@ class WheelClicker:
         print(f"Current Wheel State: {self.currentWheelState}, Zero Passings: {self.zeroPassings}")
 
 
-
-
-
-
-#min = 0
-#max = 99
 currentWheelState = 50
-#zeroLandings = 0
+
 wheel = WheelClicker(currentWheelState)
 
 with open("a_input_test.txt", "r") as file:
@@ -43,6 +37,7 @@ with open("a_input_test.txt", "r") as file:
     for line in lines:
         direction = line[0]
         amount = int(line[1:])
+        
         # move the wheel
         wheel.rotate_left(amount) if direction == "L" else wheel.rotate_right(amount)
 
