@@ -7,7 +7,23 @@ test_input = """\
   6 98  215 314
 *   +   *   +  """
 
+def multiply_nums(nums):
+    result = 1
+    for n in nums:
+        result *= int(n)
+    return result
 
+def add_nums(nums):
+    result = 0
+    for n in nums:
+        result += int(n)
+    return result
+
+def process_column(column_numbers, multiply):
+    if multiply:
+        return multiply_nums(column_numbers)
+    else:
+        return add_nums(column_numbers)
 
 sum = 0
 
@@ -20,11 +36,6 @@ lines = f.readlines()
 
 line_len = len(lines[0])
 num_rows = len(lines)
-print("Line len: ", line_len, " Num rows: ", num_rows)
-
-# print lengths of all lines
-for i in range(num_rows):
-    print("Line ", i, " len: ", len(lines[i]))
 
 
 additions = []
@@ -32,78 +43,40 @@ multiplications = []
 column_numbes_index = -1
 column_numbers = []
 multiply = False
-for i in range(line_len):
-    print("Processing column ", i)
+
+
+for column in range(line_len):
     column_numbers.append("")
     column_numbes_index += 1
-    print("Column numbers: ", column_numbers)
     for j in range(num_rows):
-        if lines[j][i] == ' ':
-            #column_numbes_index += 1
+        if lines[j][column] == ' ':
+            # space can be ignored
             continue
-        elif lines[j][i] == '\n':
+        elif lines[j][column] == '\n':
+            # end of line, break out of inner loop
+            # this might not be needed
             break
-        elif lines[j][i] == '*':
-            multiply = True
-            print("MULT")
-        elif lines[j][i] == '+':
+        elif lines[j][column] == '*':
+            multiply = True            
+        elif lines[j][column] == '+':
             multiply = False
-            print("ADD")
         else:
-            print("Adding char ", lines[j][i], " to column_numbers[", column_numbes_index, "]")
-            column_numbers[column_numbes_index] += lines[j][i]
+            # build each number by string concat
+            column_numbers[column_numbes_index] += lines[j][column]
             
-    print("Column ", i," number: ", column_numbers[column_numbes_index])
+    print("Column ", column," number: ", column_numbers[column_numbes_index])
 
     if column_numbers[column_numbes_index].strip() == '':
-        # new column
-        print("New COL")
-        if multiply:
-            print("Adding to multiplications: ", column_numbers)
-            multiplications.append(column_numbers)
-        else:
-            print("Adding to additions: ", column_numbers)
-            additions.append(column_numbers)
+        print("Processing column numbers: ", column_numbers[:-1], " multiply: ", multiply)
+        sum += process_column(column_numbers[:-1], multiply)
         column_numbers = []
         column_numbes_index = -1
         multiply = False
 
-
-print("LAST COL")
-if multiply:
-    print("Adding to multiplications: ", column_numbers)
-    multiplications.append(column_numbers)
-else:
-    print("Adding to additions: ", column_numbers)
-    additions.append(column_numbers)
-
-
-print("Multiplications: ", multiplications)
-print("Additions: ", additions)
-
-sums = []
-mult_sum = 1
-for m in multiplications:
-    mult_sum = 1
-    for val in m:
-        if val.strip() == '':
-            continue
-        print("Multiplying ", mult_sum, " by ", int(val))
-        mult_sum *= int(val)
-    print("Multiplication result: ", mult_sum)
-    sums.append(mult_sum)
-
-add_sum = 0
-for a in additions:
-    for val in a:
-        if val.strip() == '':
-            continue
-        sums.append(int(val))
-
-sum = 0
-for s in sums:
-    sum += s
+# last column needs to be processed when the input is from variable instead of file
+# if from file, this doesn't do anything
+sum += process_column(column_numbers, multiply) #should go to IF where we encounter newline
 
 print("Sum: ", sum)
 
-exit()
+f.close()
